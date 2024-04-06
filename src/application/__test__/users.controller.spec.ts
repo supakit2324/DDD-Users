@@ -12,9 +12,12 @@ import { DB_CONNECTION_NAME } from '../../constants';
 import { mongooseModuleAsyncOptions } from '../../infrastructure/database/database.providers';
 import configuration from '../../config/configuration';
 import { UserDto } from '../dto/user.dto';
+import { UpdateService } from '../../domain/services/update.service';
+import { UpdateUserDto } from '../dto/update-user.dto';
 describe('UserController', () => {
   let controller: UsersController;
   let createService: CreateService;
+  let updateService: UpdateService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -27,11 +30,18 @@ describe('UserController', () => {
         MongooseModule.forFeature(model, DB_CONNECTION_NAME),
       ],
       controllers: [UsersController],
-      providers: [UsersRepository, CreateService, ConfigService, JwtStrategy],
+      providers: [
+        UsersRepository,
+        CreateService,
+        ConfigService,
+        JwtStrategy,
+        UpdateService,
+      ],
     }).compile();
 
     controller = module.get<UsersController>(UsersController);
     createService = module.get<CreateService>(CreateService);
+    updateService = module.get<UpdateService>(UpdateService);
   });
 
   it('create', async () => {
@@ -56,6 +66,7 @@ describe('UserController', () => {
     const profile: UserDto = {
       userId: 'userId',
       email: 'email@gmail.com',
+      username: 'username',
       password: 'hash',
       roles: 'member',
       token: 'token',
@@ -70,5 +81,40 @@ describe('UserController', () => {
     Object.keys(data).forEach((key) => {
       expect(data[key]).toStrictEqual(profile[key]);
     });
+  });
+
+  it('update', async () => {
+    const currentUser: UserDto = {
+      userId: 'userId',
+      email: 'email@gmail.com',
+      username: 'username',
+      password: 'hash',
+      roles: 'member',
+      token: 'token',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const update: UpdateUserDto = {
+      username: 'username1',
+    };
+
+    const updatedUser: UserDto = {
+      ...currentUser,
+      ...update,
+    };
+
+    jest
+      .spyOn(updateService, 'update')
+      .mockImplementation(async (userId, payload) => {
+        expect(userId).toBe(currentUser.userId);
+        expect(payload).toEqual(update);
+        return updatedUser;
+      });
+
+    const result = await controller.update(currentUser, update);
+
+    expect(result).toBeDefined();
+    expect(result).toEqual(updatedUser);
   });
 });

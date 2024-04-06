@@ -15,6 +15,12 @@ export class UserDto {
   email: string;
 
   @ApiProperty({
+    example: 'username',
+  })
+  @IsString()
+  username: string;
+
+  @ApiProperty({
     example: 'hash',
   })
   @IsString()

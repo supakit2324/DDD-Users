@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { CreateUserDto } from '../../../application/dto/create-user.dto';
 import { Users } from '../../models/users.schema';
 import { DB_CONNECTION_NAME } from '../../../constants';
+import { UpdateUserDto } from '../../../application/dto/update-user.dto';
 
 @Injectable()
 export class UsersRepository {
@@ -20,7 +21,13 @@ export class UsersRepository {
     return this.usersModel.findOne({ email });
   }
 
-  async create(payload: CreateUserDto): Promise<Users> {
+  create(payload: CreateUserDto): Promise<Users> {
     return this.usersModel.create(payload);
+  }
+  update(userId: string, payload: UpdateUserDto): Promise<UpdateUserDto> {
+    return this.usersModel.findOneAndUpdate(
+      { userId },
+      { username: payload.username },
+    );
   }
 }

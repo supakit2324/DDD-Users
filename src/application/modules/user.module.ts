@@ -8,6 +8,7 @@ import { DB_CONNECTION_NAME } from '../../constants';
 import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from '../../infrastructure/guards/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
+import { UpdateService } from '../../domain/services/update.service';
 
 @Module({
   imports: [
@@ -15,6 +16,12 @@ import { PassportModule } from '@nestjs/passport';
     MongooseModule.forFeature(model, DB_CONNECTION_NAME),
   ],
   controllers: [UsersController],
-  providers: [UsersRepository, CreateService, ConfigService, JwtStrategy],
+  providers: [
+    UsersRepository,
+    CreateService,
+    ConfigService,
+    JwtStrategy,
+    UpdateService,
+  ],
 })
 export class UserModule {}
