@@ -9,6 +9,8 @@ import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from '../../infrastructure/guards/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { UpdateService } from '../../domain/services/update.service';
+import { DeleteService } from '../../domain/services/delete.service';
+import { FindUsersService } from '../../domain/services/find-users.service';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { UpdateService } from '../../domain/services/update.service';
     ConfigService,
     JwtStrategy,
     UpdateService,
+    DeleteService,
+    FindUsersService,
   ],
 })
 export class UserModule {}

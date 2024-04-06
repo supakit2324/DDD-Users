@@ -17,6 +17,10 @@ export class UsersRepository {
     return this.usersModel;
   }
 
+  find(): Promise<Users[]> {
+    return this.usersModel.find().lean();
+  }
+
   findEmail(email: string): Promise<Users> {
     return this.usersModel.findOne({ email });
   }
@@ -24,10 +28,15 @@ export class UsersRepository {
   create(payload: CreateUserDto): Promise<Users> {
     return this.usersModel.create(payload);
   }
-  update(userId: string, payload: UpdateUserDto): Promise<UpdateUserDto> {
+
+  update(userId: string, payload: UpdateUserDto): Promise<Users> {
     return this.usersModel.findOneAndUpdate(
       { userId },
       { username: payload.username },
     );
+  }
+
+  delete(userId: string): Promise<Users> {
+    return this.usersModel.findOneAndDelete({ userId });
   }
 }

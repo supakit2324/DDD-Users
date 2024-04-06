@@ -6,7 +6,7 @@ export class UserDto {
     example: 'userId',
   })
   @IsString()
-  userId: string;
+  userId?: string;
 
   @ApiProperty({
     example: 'email@gmail.com',
@@ -37,17 +37,5 @@ export class UserDto {
     example: 'token',
   })
   @IsString()
-  token: string;
-
-  @ApiProperty({
-    type: Date,
-    example: new Date(),
-  })
-  createdAt: Date;
-
-  @ApiProperty({
-    type: Date,
-    example: new Date(),
-  })
-  updatedAt: Date;
+  token?: string;
 }

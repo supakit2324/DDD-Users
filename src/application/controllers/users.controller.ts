@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   InternalServerErrorException,
+  Param,
   Post,
   Put,
   UseGuards,
@@ -20,6 +22,8 @@ import { LoggingInterceptor } from '../interceptors/logging.interceptor';
 import { UserDto } from '../dto/user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UpdateService } from '../../domain/services/update.service';
+import { DeleteService } from '../../domain/services/delete.service';
+import { FindUsersService } from '../../domain/services/find-users.service';
 
 @Controller('user')
 @ApiTags('user')
@@ -29,8 +33,10 @@ export class UsersController {
     UsersController.name,
   );
   constructor(
+    private readonly findUserService: FindUsersService,
     private readonly createService: CreateService,
     private readonly updateService: UpdateService,
+    private readonly deleteService: DeleteService,
   ) {}
 
   @Post()
@@ -50,6 +56,21 @@ export class UsersController {
         message: e?.message ?? e,
       });
     }
+  }
+
+  @Get('')
+  @ApiBearerAuth()
+  @ApiResponse({
+    type: UserDto,
+  })
+  async find(): Promise<UserDto[]> {
+    const context: ContextEntity = {
+      module: UsersController.name,
+      method: 'find',
+    };
+    const user = await this.findUserService.find();
+    this.logger.logger(user, context);
+    return user;
   }
 
   @Get('me')
@@ -85,5 +106,16 @@ export class UsersController {
     };
     this.logger.logger(user, context);
     return await this.updateService.update(user.userId, payload);
+  }
+
+  @Delete(':userId')
+  @ApiBearerAuth()
+  async delete(@Param('userId') userId: string): Promise<UserDto> {
+    const context: ContextEntity = {
+      module: UsersController.name,
+      method: 'delete',
+    };
+    this.logger.logger(userId, context);
+    return await this.deleteService.delete(userId);
   }
 }
