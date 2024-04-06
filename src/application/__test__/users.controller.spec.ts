@@ -14,6 +14,8 @@ import configuration from '../../config/configuration';
 import { UserDto } from '../dto/user.dto';
 import { UpdateService } from '../../domain/services/update.service';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { FindUsersService } from '../../domain/services/find-users.service';
+import { DeleteService } from '../../domain/services/delete.service';
 describe('UserController', () => {
   let controller: UsersController;
   let createService: CreateService;
@@ -36,6 +38,8 @@ describe('UserController', () => {
         ConfigService,
         JwtStrategy,
         UpdateService,
+        FindUsersService,
+        DeleteService,
       ],
     }).compile();
 
@@ -70,8 +74,6 @@ describe('UserController', () => {
       password: 'hash',
       roles: 'member',
       token: 'token',
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
 
     const profileUser = cloneDeep(profile);
@@ -91,8 +93,6 @@ describe('UserController', () => {
       password: 'hash',
       roles: 'member',
       token: 'token',
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
 
     const update: UpdateUserDto = {
